@@ -13,12 +13,14 @@ import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class RemoteActivity extends Activity
+public class RemoteActivity extends Activity implements onPluginsInfoLoadedListener
 {
     private String[] mRemotes = { "Redbutton", "System" };
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
+    private WebView mRemoteView;
+    private PluginsManager mPlugins;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -26,12 +28,11 @@ public class RemoteActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remote);
-
         initDrawer();
-
-        WebView remoteView = (WebView) findViewById(R.id.remote_view);
-        remoteView.loadUrl("http://192.168.1.14:34340/ui/redbutton");
-        remoteView.getSettings().setJavaScriptEnabled(true);
+        mRemoteView = (WebView) findViewById(R.id.remote_view);
+        mRemoteView.getSettings().setJavaScriptEnabled(true);  
+        mPlugins = new PluginsManager(this);
+        mPlugins.gatherPlugins();
     }
 
     public void initDrawer()
@@ -114,6 +115,13 @@ public class RemoteActivity extends Activity
         // Handle your other action bar items...
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPluginsInfoLoaded()
+    {
+        mRemoteView.loadUrl("http://192.168.1.14:34340/ui/"
+                            +mPlugins.getActivePluginName());
     }
 
 }
