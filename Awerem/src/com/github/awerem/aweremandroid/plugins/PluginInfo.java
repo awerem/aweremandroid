@@ -1,7 +1,7 @@
-package com.github.awerem.aweremandroid;
+package com.github.awerem.aweremandroid.plugins;
 
 
-public class PluginInfo
+public class PluginInfo implements Comparable<PluginInfo>
 {
     private String name = null;
     private String title = null;
@@ -97,5 +97,27 @@ public class PluginInfo
     public String toString()
     {
         return "name: " + name + "; title: " + title + "; category: " + category;
+    }
+
+    @Override
+    public int compareTo(PluginInfo another)
+    {
+        if (this.category == another.getCategory())
+        {
+            if (this.priority < another.getPriority())
+                return -1;
+            else if (this.priority > another.getPriority())
+                return 1;
+            else
+                return 0;
+        }
+        else if (this.category == "contextual")
+        {
+            return -1;
+        }
+        else
+        {
+            return 1;
+        }
     }
 }

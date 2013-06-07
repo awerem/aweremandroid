@@ -1,5 +1,9 @@
 package com.github.awerem.aweremandroid;
 
+import com.github.awerem.aweremandroid.navigation.NavigationArrayAdapter;
+import com.github.awerem.aweremandroid.plugins.PluginsManager;
+import com.github.awerem.aweremandroid.plugins.onPluginsInfoLoadedListener;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -39,8 +43,6 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
     {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.mainLayout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_remote, mRemotes));
         // Set the list's click listener
         // mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
@@ -120,6 +122,9 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
     @Override
     public void onPluginsInfoLoaded()
     {
+        //TODO Add a factory to create the array.
+        //TODO if any trouble, see http://stackoverflow.com/questions/13590627/android-listview-headers
+        mDrawerList.setAdapter(new NavigationArrayAdapter(this, null));
         mRemoteView.loadUrl("http://192.168.1.14:34340/ui/"
                             +mPlugins.getActivePluginName());
     }

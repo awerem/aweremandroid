@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_list_remote"
+    android:id="@+id/drawer_list_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/activatedBackgroundIndicator"
@@ -10,20 +10,13 @@
     android:paddingRight="16dp"
     android:clickable="true">
 
-    <ImageView
-        android:id="@+id/remote_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:paddingRight="12dp"
-        android:contentDescription="@null"
-        android:src="@android:color/transparent" />
-
     <TextView
-        android:id="@+id/remote_title"
+        android:id="@+id/header_name"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
-        android:textColor="#fff" >
+        android:textStyle="bold"
+        android:textColor="#ddd" >
     </TextView>
 
 </LinearLayout>

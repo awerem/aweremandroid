@@ -1,4 +1,4 @@
-package com.github.awerem.aweremandroid;
+package com.github.awerem.aweremandroid.plugins;
 
 import java.io.IOException;
 import java.io.InputStream;
