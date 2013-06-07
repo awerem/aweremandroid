@@ -50,7 +50,7 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view)
             {
-                getActionBar().setTitle("Lol");
+                getActionBar().setTitle(mPlugins.getActivePluginTitle());
                 invalidateOptionsMenu(); // creates call to
                                          // onPrepareOptionsMenu()
             }
