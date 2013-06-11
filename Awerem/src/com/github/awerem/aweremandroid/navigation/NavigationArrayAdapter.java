@@ -46,7 +46,7 @@ public class NavigationArrayAdapter extends ArrayAdapter<Item>
     {
         return items.get(position).getView(inflater, convertView);
     }
-    
+
     @Override
     public boolean isEnabled(int position)
     {

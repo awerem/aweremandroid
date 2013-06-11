@@ -32,26 +32,25 @@ public class PluginsManager
         new getPluginsInfoAsyncTask(this).execute(URL);
 
     }
-    
+
     public void onPluginInfoReceived()
     {
         active = plugins.get(1);
-        if(callback != null)
+        if (callback != null)
         {
             callback.onPluginsInfoLoaded();
-        }        
+        }
     }
 
     public void setPlugins(ArrayList<PluginInfo> result)
     {
         this.plugins = result;
     }
-    
+
     public ArrayList<PluginInfo> getPlugins()
     {
         return plugins;
     }
-
 
     public String getActivePluginTitle()
     {

@@ -2,12 +2,6 @@ package com.github.awerem.aweremandroid;
 
 import java.util.ArrayList;
 
-import com.github.awerem.aweremandroid.navigation.Item;
-import com.github.awerem.aweremandroid.navigation.NavigationArrayAdapter;
-import com.github.awerem.aweremandroid.plugins.PluginsManager;
-import com.github.awerem.aweremandroid.plugins.onPluginsInfoLoadedListener;
-import com.github.awerem.aweremandroid.utils.Utils;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -18,12 +12,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.github.awerem.aweremandroid.navigation.Item;
+import com.github.awerem.aweremandroid.navigation.NavigationArrayAdapter;
+import com.github.awerem.aweremandroid.plugins.PluginsManager;
+import com.github.awerem.aweremandroid.plugins.onPluginsInfoLoadedListener;
+import com.github.awerem.aweremandroid.utils.Utils;
 
 public class RemoteActivity extends Activity implements onPluginsInfoLoadedListener
 {
-    private String[] mRemotes = { "Redbutton", "System" };
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -83,7 +81,7 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
     {
         // If the nav drawer is open, hide action items related to the content
         // view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        //boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         return super.onPrepareOptionsMenu(menu);
     }
 

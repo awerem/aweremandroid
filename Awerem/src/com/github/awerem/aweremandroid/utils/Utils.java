@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.github.awerem.aweremandroid.R;
 import com.github.awerem.aweremandroid.navigation.Header;
@@ -15,7 +14,8 @@ import com.github.awerem.aweremandroid.plugins.PluginInfo;
 public class Utils
 {
 
-    public static ArrayList<Item> createNavList(ArrayList<PluginInfo> plugins, Context ctx)
+    public static ArrayList<Item> createNavList(ArrayList<PluginInfo> plugins,
+            Context ctx)
     {
         ArrayList<Item> list = new ArrayList<Item>();
         String curCat = "";
@@ -26,9 +26,11 @@ public class Utils
             {
                 curCat = plugin.getCategory();
                 if (curCat.equals("contextual"))
-                    list.add(new Header(ctx.getResources().getString(R.string.contextual)));
+                    list.add(new Header(ctx.getResources().getString(
+                            R.string.contextual)));
                 else if (curCat.equals("utils"))
-                    list.add(new Header(ctx.getResources().getString(R.string.utils)));
+                    list.add(new Header(ctx.getResources().getString(
+                            R.string.utils)));
             }
             list.add(new RemoteItem(plugin));
         }

@@ -38,28 +38,29 @@ class getPluginsInfoAsyncTask extends
         }
     }
 
-    private ArrayList<PluginInfo> makePluginsList(InputStream is) throws IOException
+    private ArrayList<PluginInfo> makePluginsList(InputStream is)
+            throws IOException
     {
         JsonReader reader = null;
         try
         {
-        ArrayList<PluginInfo> pluginsList = new ArrayList<PluginInfo>();
-        reader = new JsonReader(new InputStreamReader(is, "UTF-8"));
-        reader.beginArray();
-        while(reader.hasNext())
-        {
-            pluginsList.add(readPlugin(reader));
-        }
-        reader.endArray();
-        return pluginsList;
+            ArrayList<PluginInfo> pluginsList = new ArrayList<PluginInfo>();
+            reader = new JsonReader(new InputStreamReader(is, "UTF-8"));
+            reader.beginArray();
+            while (reader.hasNext())
+            {
+                pluginsList.add(readPlugin(reader));
+            }
+            reader.endArray();
+            return pluginsList;
         }
         finally
         {
-            if(reader != null)
+            if (reader != null)
             {
                 reader.close();
             }
-            if(is != null)
+            if (is != null)
                 is.close();
         }
     }
@@ -68,10 +69,10 @@ class getPluginsInfoAsyncTask extends
     {
         PluginInfo plugin = new PluginInfo();
         reader.beginObject();
-        while(reader.hasNext())
+        while (reader.hasNext())
         {
             String name = reader.nextName();
-            if(name.equals("name"))
+            if (name.equals("name"))
             {
                 plugin.setName(reader.nextString());
             }
@@ -85,7 +86,7 @@ class getPluginsInfoAsyncTask extends
             }
             else if (name.equals("icon"))
             {
-                if(reader.peek() == JsonToken.NULL)
+                if (reader.peek() == JsonToken.NULL)
                 {
                     reader.skipValue();
                     plugin.setIcon(null);
@@ -93,7 +94,7 @@ class getPluginsInfoAsyncTask extends
                 else
                     plugin.setIcon(reader.nextString());
             }
-            else if(name.equals("priority"))
+            else if (name.equals("priority"))
             {
                 plugin.setPriority(reader.nextLong());
             }
@@ -111,17 +112,17 @@ class getPluginsInfoAsyncTask extends
     {
         try
         {
-        URL url = new URL(myurl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000 /* milliseconds */);
-        conn.setConnectTimeout(15000 /* milliseconds */);
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
+            URL url = new URL(myurl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("GET");
+            conn.setDoInput(true);
 
-        conn.connect();
-        int response = conn.getResponseCode();
-        Log.d(DEBUG_TAG, "The response is: " + response);
-        return conn.getInputStream();
+            conn.connect();
+            int response = conn.getResponseCode();
+            Log.d(DEBUG_TAG, "The response is: " + response);
+            return conn.getInputStream();
         }
         catch (Exception e)
         {
