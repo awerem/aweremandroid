@@ -1,24 +1,28 @@
 package com.github.awerem.aweremandroid.internet;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 
 public class ServerDiscoverer
 {
-    private Context mContext;
+    private WeakReference<Activity> mContext;
 
-    public ServerDiscoverer(Context ctx)
+    public ServerDiscoverer(WeakReference<Activity> ctx)
     {
         mContext = ctx;
     }
     
     InetAddress getBroadcastAddress() throws IOException {
-        WifiManager wifi = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+        if(mContext.get() == null)
+            return null;
+        WifiManager wifi = (WifiManager) mContext.get().getSystemService(Context.WIFI_SERVICE);
         DhcpInfo dhcp = wifi.getDhcpInfo();
         // handle null somehow
 

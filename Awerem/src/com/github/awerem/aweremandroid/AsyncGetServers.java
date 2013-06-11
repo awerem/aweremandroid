@@ -1,5 +1,6 @@
 package com.github.awerem.aweremandroid;
 
+import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -15,37 +16,26 @@ class AsyncGetServers extends
             AsyncTask<Void, InetAddress, ArrayList<InetAddress>>
     {
         
-        private Activity ctx;
+        private WeakReference<Activity> ctx;
 
         public AsyncGetServers(Activity ctx)
         {
-            this.ctx = ctx;
+            this.ctx = new WeakReference<Activity>(ctx);
         }
         
         @Override
         protected ArrayList<InetAddress> doInBackground(Void... params)
         {
-            final ServerDiscoverer discoverer = new ServerDiscoverer(ctx);
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-
-                @Override
-                public void run()
-                {
-                    for(InetAddress address : discoverer.gatherIPs())
-                        publishProgress(address);
-                }
-            }, 0, 1000);
-            return discoverer.AllIPs();
+            
         }
 
         @Override
         protected void onProgressUpdate(InetAddress... values)
         {
             super.onProgressUpdate(values);
-            if (values.length > 0)
+            if (values.length > 0 && ctx.get() != null)
             {
-                Intent openRemote = new Intent(ctx,
+                Intent openRemote = new Intent(ctx.get(),
                         RemoteActivity.class);
                 openRemote.putExtra("ip", values[0].getHostAddress());
                 ctx.startActivity(openRemote);
