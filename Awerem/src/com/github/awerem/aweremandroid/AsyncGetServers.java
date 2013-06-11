@@ -32,7 +32,7 @@ class AsyncGetServers extends
     @Override
     protected void onPostExecute(ArrayList<InetAddress> result)
     {
-        if (ctx.get() != null)
+        if (ctx.get() != null && !result.isEmpty())
         {
             Intent openRemote = new Intent(ctx.get(), RemoteActivity.class);
             openRemote.putExtra("ip", result.get(0).getHostAddress());

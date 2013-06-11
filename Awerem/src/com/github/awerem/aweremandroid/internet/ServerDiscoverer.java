@@ -3,8 +3,8 @@ package com.github.awerem.aweremandroid.internet;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -29,7 +29,7 @@ public class ServerDiscoverer
         mContext = ctx;
     }
 
-    InetAddress getBroadcastAddress() throws IOException
+    public InetAddress getBroadcastAddress() throws IOException
     {
         if (mContext.get() == null)
             return null;
@@ -47,13 +47,13 @@ public class ServerDiscoverer
 
     public ArrayList<InetAddress> gatherIPs()
     {
-        DatagramSocket socket = null;
+        MulticastSocket socket = null;
         byte[] buf = new byte[128];
         DatagramPacket answer = new DatagramPacket(buf, buf.length);
         ArrayList<InetAddress> addresses = new ArrayList<InetAddress>();
         try
         {
-            socket = new DatagramSocket(AWEREM_PORT);
+            socket = new MulticastSocket(AWEREM_PORT);
             socket.setBroadcast(true);
             socket.setSoTimeout(TIMEOUT);
             byte[] rToken = new byte[128];
