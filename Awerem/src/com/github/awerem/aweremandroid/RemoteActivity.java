@@ -1,8 +1,12 @@
 package com.github.awerem.aweremandroid;
 
+import java.util.ArrayList;
+
+import com.github.awerem.aweremandroid.navigation.Item;
 import com.github.awerem.aweremandroid.navigation.NavigationArrayAdapter;
 import com.github.awerem.aweremandroid.plugins.PluginsManager;
 import com.github.awerem.aweremandroid.plugins.onPluginsInfoLoadedListener;
+import com.github.awerem.aweremandroid.utils.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -124,9 +128,15 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
     {
         //TODO Add a factory to create the array.
         //TODO if any trouble, see http://stackoverflow.com/questions/13590627/android-listview-headers
-        mDrawerList.setAdapter(new NavigationArrayAdapter(this, null));
+        updateNavigationDrawer();
         mRemoteView.loadUrl("http://192.168.1.14:34340/ui/"
                             +mPlugins.getActivePluginName());
+    }
+
+    private void updateNavigationDrawer()
+    {
+        ArrayList<Item> itemsList = Utils.createNavList(mPlugins.getPlugins(), this);
+        mDrawerList.setAdapter(new NavigationArrayAdapter(this, itemsList));
     }
 
 }

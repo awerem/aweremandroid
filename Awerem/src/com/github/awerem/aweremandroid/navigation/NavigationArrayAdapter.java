@@ -3,9 +3,8 @@ package com.github.awerem.aweremandroid.navigation;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.awerem.aweremandroid.plugins.PluginInfo;
-
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,12 @@ public class NavigationArrayAdapter extends ArrayAdapter<Item>
     {
         super(context, 0, items);
         inflater = LayoutInflater.from(context);
+        this.items = items;
+        int count = 0;
+        for(Item item: items)
+        {
+            Log.d("ArrayLol", String.valueOf((count++)));
+        }
     }
 
     @Override

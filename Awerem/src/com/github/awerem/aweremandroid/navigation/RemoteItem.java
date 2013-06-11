@@ -13,7 +13,7 @@ public class RemoteItem implements Item, Comparable<RemoteItem>
 {
     private PluginInfo plugin;
 
-    public RemoteItem(Context ctx, PluginInfo plugin)
+    public RemoteItem(PluginInfo plugin)
     {
         this.setPlugin(plugin);
     }
