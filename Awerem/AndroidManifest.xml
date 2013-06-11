@@ -7,6 +7,7 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="17" />
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -16,6 +17,10 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.github.awerem.aweremandroid.RemoteActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.github.awerem.aweremandroid.PairingActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

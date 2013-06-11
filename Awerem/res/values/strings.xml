@@ -8,5 +8,6 @@
     <string name="drawer_close">Close the navigation drawer</string>
     <string name="contextual">Contextual</string>
     <string name="utils">Utils</string>
+    <string name="seeking_server">Looking for a controllable computer</string>
 
 </resources>
