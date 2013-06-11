@@ -26,6 +26,8 @@ class AsyncGetServers extends
         @Override
         protected ArrayList<InetAddress> doInBackground(Void... params)
         {
+            ServerDiscoverer discoverer = new ServerDiscoverer(ctx);
+            return null;
             
         }
 
@@ -38,7 +40,7 @@ class AsyncGetServers extends
                 Intent openRemote = new Intent(ctx.get(),
                         RemoteActivity.class);
                 openRemote.putExtra("ip", values[0].getHostAddress());
-                ctx.startActivity(openRemote);
+                ctx.get().startActivity(openRemote);
                 cancel(true);
             }
         }
