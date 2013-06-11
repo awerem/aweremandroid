@@ -14,7 +14,9 @@ public class PairingActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pairing);
-        new AsyncGetServers(this);
+        AsyncGetServers async = new AsyncGetServers(this);
+        async.execute();
+        
     }
 
     @Override
