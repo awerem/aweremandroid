@@ -1,6 +1,5 @@
 package com.github.awerem.aweremandroid.navigation;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -36,7 +35,7 @@ public class RemoteItem implements Item, Comparable<RemoteItem>
         {
             view = convertView;
         }
-        TextView titleview = (TextView) view.findViewById(R.id.remote_title);
+        TextView titleview = (TextView) view.findViewById(R.id.navremote);
         titleview.setText(getPlugin().getTitle());
         return view;
     }

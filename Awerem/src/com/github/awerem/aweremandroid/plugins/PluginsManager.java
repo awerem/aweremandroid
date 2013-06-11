@@ -61,4 +61,9 @@ public class PluginsManager
             return active.getTitle();
     }
 
+    public void setActive(int position)
+    {
+        active = plugins.get(position);
+    }
+
 }

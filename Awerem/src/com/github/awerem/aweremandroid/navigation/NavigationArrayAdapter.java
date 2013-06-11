@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +26,6 @@ public class NavigationArrayAdapter extends ArrayAdapter<Item>
         super(context, 0, items);
         inflater = LayoutInflater.from(context);
         this.items = items;
-        int count = 0;
-        for(Item item: items)
-        {
-            Log.d("ArrayLol", String.valueOf((count++)));
-        }
     }
 
     @Override
@@ -52,5 +46,13 @@ public class NavigationArrayAdapter extends ArrayAdapter<Item>
     {
         return items.get(position).getView(inflater, convertView);
     }
-
+    
+    @Override
+    public boolean isEnabled(int position)
+    {
+        if (items.get(position).getViewType() == RowType.HEADER_ITEM.ordinal())
+            return false;
+        else
+            return true;
+    }
 }

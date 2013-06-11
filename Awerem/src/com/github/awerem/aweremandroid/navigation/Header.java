@@ -35,7 +35,7 @@ public class Header implements Item
             view = convertView;
         }
 
-        TextView text = (TextView) view.findViewById(R.id.header_name);
+        TextView text = (TextView) view.findViewById(R.id.navheader);
         text.setText(name);
 
         return view;

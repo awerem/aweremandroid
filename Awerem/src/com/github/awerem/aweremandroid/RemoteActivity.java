@@ -122,13 +122,25 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
 
         return super.onOptionsItemSelected(item);
     }
+    
+    public void selectItem(int position)
+    {
+        mPlugins.setActive(position);
+        updateRemoteView();
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mPlugins.getActivePluginTitle());
+        mDrawerLayout.closeDrawer(mDrawerList);
+    }
 
     @Override
     public void onPluginsInfoLoaded()
     {
-        //TODO Add a factory to create the array.
-        //TODO if any trouble, see http://stackoverflow.com/questions/13590627/android-listview-headers
         updateNavigationDrawer();
+        updateRemoteView();
+    }
+
+    private void updateRemoteView()
+    {
         mRemoteView.loadUrl("http://192.168.1.14:34340/ui/"
                             +mPlugins.getActivePluginName());
     }
