@@ -12,21 +12,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.github.awerem.aweremandroid.navigation.Item;
 import com.github.awerem.aweremandroid.navigation.NavigationArrayAdapter;
+import com.github.awerem.aweremandroid.navigation.NavigationArrayAdapter.RowType;
+import com.github.awerem.aweremandroid.navigation.RemoteItem;
 import com.github.awerem.aweremandroid.plugins.PluginsManager;
 import com.github.awerem.aweremandroid.plugins.onPluginsInfoLoadedListener;
 import com.github.awerem.aweremandroid.utils.Utils;
 
-public class RemoteActivity extends Activity implements onPluginsInfoLoadedListener
+public class RemoteActivity extends Activity implements onPluginsInfoLoadedListener, ListView.OnItemClickListener
 {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private WebView mRemoteView;
     private PluginsManager mPlugins;
+    private ArrayList<Item> itemsList = null;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -72,6 +76,8 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+        
+        mDrawerList.setOnItemClickListener(this);
 
     }
 
@@ -120,15 +126,7 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
 
         return super.onOptionsItemSelected(item);
     }
-    
-    public void selectItem(int position)
-    {
-        mPlugins.setActive(position);
-        updateRemoteView();
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mPlugins.getActivePluginTitle());
-        mDrawerLayout.closeDrawer(mDrawerList);
-    }
+
 
     @Override
     public void onPluginsInfoLoaded()
@@ -145,8 +143,21 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
 
     private void updateNavigationDrawer()
     {
-        ArrayList<Item> itemsList = Utils.createNavList(mPlugins.getPlugins(), this);
+        itemsList = Utils.createNavList(mPlugins.getPlugins(), this);
         mDrawerList.setAdapter(new NavigationArrayAdapter(this, itemsList));
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        if (itemsList.get(position).getViewType() == RowType.LIST_ITEM.ordinal())
+        {
+            RemoteItem rem = (RemoteItem) itemsList.get(position);
+            mPlugins.setActive(rem.getPlugin().getName());
+            updateRemoteView();
+            mDrawerList.setItemChecked(position, true);
+            setTitle(mPlugins.getActivePluginTitle());
+            mDrawerLayout.closeDrawer(mDrawerList);
+        }
+    }
 }

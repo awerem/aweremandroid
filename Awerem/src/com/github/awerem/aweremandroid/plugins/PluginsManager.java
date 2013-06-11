@@ -60,9 +60,16 @@ public class PluginsManager
             return active.getTitle();
     }
 
-    public void setActive(int position)
+    public void setActive(String name)
     {
-        active = plugins.get(position);
+        for(PluginInfo plugin : plugins)
+        {
+            if(plugin.getName().equals(name))
+            {
+                active = plugin;
+                break;
+            }
+        }
     }
 
 }
