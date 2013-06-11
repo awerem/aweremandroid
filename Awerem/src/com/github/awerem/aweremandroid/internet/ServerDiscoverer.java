@@ -59,7 +59,7 @@ public class ServerDiscoverer
             byte[] rToken = new byte[128];
             SecureRandom.getInstance("SHA1PRNG").nextBytes(rToken);
             rToken = MessageDigest.getInstance("SHA1").digest(rToken);
-            String token = Base64.encodeToString(rToken, Base64.DEFAULT);
+            String token = Base64.encodeToString(rToken, Base64.DEFAULT).trim();
             String requete = "awerem\nping\n" + token+"\n";
             DatagramPacket packet = new DatagramPacket(requete.getBytes(), 
                     requete.length(), getBroadcastAddress(), AWEREM_PORT);
@@ -90,6 +90,7 @@ public class ServerDiscoverer
         {
             e.printStackTrace();
         }
+        Log.v(DEBUG_TAG, addresses.toString());
         return addresses;
     }
 }

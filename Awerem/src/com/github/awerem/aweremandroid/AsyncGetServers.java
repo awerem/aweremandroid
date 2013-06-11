@@ -37,15 +37,8 @@ class AsyncGetServers extends
             Intent openRemote = new Intent(ctx.get(), RemoteActivity.class);
             openRemote.putExtra("ip", result.get(0).getHostAddress());
             ctx.get().startActivity(openRemote);
-            cancel(true);
+            ctx.get().finish();
         }
         super.onPostExecute(result);
-    }
-
-    @Override
-    protected void onCancelled()
-    {
-        super.onCancelled();
-        ctx.get().finish();
     }
 }
