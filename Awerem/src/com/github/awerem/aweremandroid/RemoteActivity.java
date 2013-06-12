@@ -147,7 +147,7 @@ public class RemoteActivity extends Activity implements
 
     private void updateNavigationDrawer()
     {
-        itemsList = Utils.createNavList(mPlugins.getPlugins(), this);
+        itemsList = Utils.createNavList(mPlugins.getPlugins(), this, mIp);
         mDrawerList.setAdapter(new NavigationArrayAdapter(this, itemsList));
     }
 

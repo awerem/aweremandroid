@@ -15,7 +15,7 @@ public class Utils
 {
 
     public static ArrayList<Item> createNavList(ArrayList<PluginInfo> plugins,
-            Context ctx)
+            Context ctx, String ip)
     {
         ArrayList<Item> list = new ArrayList<Item>();
         String curCat = "";
@@ -32,7 +32,7 @@ public class Utils
                     list.add(new Header(ctx.getResources().getString(
                             R.string.utils)));
             }
-            list.add(new RemoteItem(plugin));
+            list.add(new RemoteItem(plugin, ip));
         }
 
         return list;
