@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -23,7 +24,8 @@ import com.github.awerem.aweremandroid.plugins.PluginsManager;
 import com.github.awerem.aweremandroid.plugins.onPluginsInfoLoadedListener;
 import com.github.awerem.aweremandroid.utils.Utils;
 
-public class RemoteActivity extends Activity implements onPluginsInfoLoadedListener, ListView.OnItemClickListener
+public class RemoteActivity extends Activity implements
+        onPluginsInfoLoadedListener, ListView.OnItemClickListener
 {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -31,16 +33,19 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
     private WebView mRemoteView;
     private PluginsManager mPlugins;
     private ArrayList<Item> itemsList = null;
+    private String mIp = null;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Intent data = getIntent();
+        mIp = data.getStringExtra("ip");
         setContentView(R.layout.activity_remote);
         initDrawer();
         mRemoteView = (WebView) findViewById(R.id.remote_view);
-        mRemoteView.getSettings().setJavaScriptEnabled(true);  
+        mRemoteView.getSettings().setJavaScriptEnabled(true);
         mPlugins = new PluginsManager(this);
         mPlugins.gatherPlugins();
     }
@@ -76,7 +81,7 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-        
+
         mDrawerList.setOnItemClickListener(this);
 
     }
@@ -87,7 +92,7 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
     {
         // If the nav drawer is open, hide action items related to the content
         // view
-        //boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        // boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -127,7 +132,6 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void onPluginsInfoLoaded()
     {
@@ -137,8 +141,8 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
 
     private void updateRemoteView()
     {
-        mRemoteView.loadUrl("http://192.168.1.14:34340/ui/"
-                            +mPlugins.getActivePluginName());
+        mRemoteView.loadUrl("http://" + mIp + ":34340/ui/"
+                + mPlugins.getActivePluginName());
     }
 
     private void updateNavigationDrawer()
@@ -148,9 +152,11 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    public void onItemClick(AdapterView<?> parent, View view, int position,
+            long id)
     {
-        if (itemsList.get(position).getViewType() == RowType.LIST_ITEM.ordinal())
+        if (itemsList.get(position).getViewType() == RowType.LIST_ITEM
+                .ordinal())
         {
             RemoteItem rem = (RemoteItem) itemsList.get(position);
             mPlugins.setActive(rem.getPlugin().getName());
