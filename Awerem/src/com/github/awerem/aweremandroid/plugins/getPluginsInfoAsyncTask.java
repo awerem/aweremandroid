@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import android.os.AsyncTask;
 import android.util.JsonReader;
-import android.util.JsonToken;
 import android.util.Log;
 
 class getPluginsInfoAsyncTask extends
@@ -83,16 +82,6 @@ class getPluginsInfoAsyncTask extends
             else if (name.equals("category"))
             {
                 plugin.setCategory(reader.nextString());
-            }
-            else if (name.equals("icon"))
-            {
-                if (reader.peek() == JsonToken.NULL)
-                {
-                    reader.skipValue();
-                    plugin.setIcon(null);
-                }
-                else
-                    plugin.setIcon(reader.nextString());
             }
             else if (name.equals("priority"))
             {

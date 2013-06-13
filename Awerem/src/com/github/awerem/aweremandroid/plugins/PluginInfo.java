@@ -7,8 +7,7 @@ public class PluginInfo implements Comparable<PluginInfo>
     private String title = null;
     private String category = null;
     private long priority = 999;
-    private String icon = null;
-
+    
     public PluginInfo()
     {
     }
@@ -77,21 +76,7 @@ public class PluginInfo implements Comparable<PluginInfo>
         this.priority = priority;
     }
 
-    /**
-     * @return le icon
-     */
-    public String getIcon()
-    {
-        return icon;
-    }
 
-    /**
-     * @param icon le icon à définir
-     */
-    public void setIcon(String icon)
-    {
-        this.icon = icon;
-    }
     
     @Override
     public String toString()
