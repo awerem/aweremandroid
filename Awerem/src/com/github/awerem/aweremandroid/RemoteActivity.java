@@ -44,6 +44,7 @@ public class RemoteActivity extends Activity implements
         mIp = data.getStringExtra("ip");
         setContentView(R.layout.activity_remote);
         initDrawer();
+        PollManager pollmanager = new PollManager(this, "http://"+mIp+":34340/core?get=infos");
         mRemoteView = (WebView) findViewById(R.id.remote_view);
         mRemoteView.getSettings().setJavaScriptEnabled(true);
         mPlugins = new PluginsManager(this);
