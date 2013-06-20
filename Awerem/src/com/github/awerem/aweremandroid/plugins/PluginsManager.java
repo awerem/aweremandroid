@@ -35,10 +35,15 @@ public class PluginsManager
 
     public void onPluginInfoReceived()
     {
-        active = plugins.get(1);
+        boolean changeActive = false;
+        if (active == null)
+        {
+            active = plugins.get(0);
+            changeActive = true;
+        }
         if (callback != null)
         {
-            callback.onPluginsInfoLoaded();
+            callback.onPluginsInfoLoaded(true, changeActive);
         }
     }
 

@@ -136,10 +136,12 @@ public class RemoteActivity extends Activity implements
     }
 
     @Override
-    public void onPluginsInfoLoaded()
+    public void onPluginsInfoLoaded(boolean navDrawer, boolean remoteView)
     {
-        updateNavigationDrawer();
-        updateRemoteView();
+        if (navDrawer)
+            updateNavigationDrawer();
+        if(remoteView)
+            updateRemoteView();
     }
 
     private void updateRemoteView()
@@ -169,5 +171,10 @@ public class RemoteActivity extends Activity implements
             setTitle(mPlugins.getActivePluginTitle());
             mDrawerLayout.closeDrawer(mDrawerList);
         }
+    }
+
+    public void triggerPluginGathering()
+    {
+        mPlugins.gatherPlugins();
     }
 }

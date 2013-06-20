@@ -81,6 +81,7 @@ public class PollManager
                 {
                     e.printStackTrace();
                 }
+
                 PollManager.this.remoteactivity.get().runOnUiThread(
                         new Runnable() {
 
@@ -146,7 +147,7 @@ public class PollManager
         }
         if (updateRequired)
         {
-            remoteactivity.get().updateNavigationDrawer();
+            remoteactivity.get().triggerPluginGathering();
         }
     }
 
