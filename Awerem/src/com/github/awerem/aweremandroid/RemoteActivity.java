@@ -16,6 +16,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.github.awerem.aweremandroid.navigation.Item;
 import com.github.awerem.aweremandroid.navigation.NavigationArrayAdapter;
@@ -176,5 +177,12 @@ public class RemoteActivity extends Activity implements
     public void triggerPluginGathering()
     {
         mPlugins.gatherPlugins();
+    }
+
+    public void onConnectionLost()
+    {
+        Toast.makeText(this, R.string.connection_lost, Toast.LENGTH_LONG).show();
+        startActivity(new Intent(this, PairingActivity.class));
+        finish();
     }
 }

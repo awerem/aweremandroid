@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -76,6 +77,19 @@ public class PollManager
                 catch (JSONException e)
                 {
                     e.printStackTrace();
+                }
+                catch (SocketException e)
+                {
+                    Log.w("PollManagerThread", "Connection closed", e);
+                    remoteactivity.get().runOnUiThread(new Runnable() {
+                        
+                        @Override
+                        public void run()
+                        {
+                            remoteactivity.get().onConnectionLost();
+                        }
+                    });
+                    break;
                 }
                 catch (IOException e)
                 {

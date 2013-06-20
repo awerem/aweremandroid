@@ -9,5 +9,6 @@
     <string name="contextual">Contextual</string>
     <string name="utils">Utils</string>
     <string name="seeking_server">Looking for a controllable computer</string>
+    <string name="connection_lost">The connection to the remote computer has been lost</string>
 
 </resources>
