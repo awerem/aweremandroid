@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.github.awerem.aweremandroid.utils.Utils;
 public class RemoteActivity extends Activity implements
         onPluginsInfoLoadedListener, ListView.OnItemClickListener
 {
+    private static final String DEBUG_TAG = "RemoteActivity";
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -148,6 +150,7 @@ public class RemoteActivity extends Activity implements
 
     private void updateNavigationDrawer()
     {
+        Log.i(DEBUG_TAG, "updateNavigationDrawer");
         itemsList = Utils.createNavList(mPlugins.getPlugins(), this, mIp);
         mDrawerList.setAdapter(new NavigationArrayAdapter(this, itemsList));
     }
