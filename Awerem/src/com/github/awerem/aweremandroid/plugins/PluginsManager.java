@@ -6,13 +6,14 @@ import android.util.Log;
 
 public class PluginsManager
 {
-    private static String URL = "http://192.168.1.14:34340/core?get=plugin_list";
+    private String url = null;
     private ArrayList<PluginInfo> plugins = null;
     private onPluginsInfoLoadedListener callback = null;
     private PluginInfo active = null;
 
-    public PluginsManager(onPluginsInfoLoadedListener callback)
+    public PluginsManager(onPluginsInfoLoadedListener callback, String ip)
     {
+    	this.url = "http://" + ip + ":34340/core?get=plugin_list";
         this.callback = callback;
     }
 
@@ -29,7 +30,7 @@ public class PluginsManager
 
     public void gatherPlugins()
     {
-        new getPluginsInfoAsyncTask(this).execute(URL);
+        new getPluginsInfoAsyncTask(this).execute(url);
 
     }
 

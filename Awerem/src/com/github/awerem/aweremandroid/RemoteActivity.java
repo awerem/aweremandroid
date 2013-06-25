@@ -50,7 +50,7 @@ public class RemoteActivity extends Activity implements
         PollManager pollmanager = new PollManager(this, "http://"+mIp+":34340/core?get=infos");
         mRemoteView = (WebView) findViewById(R.id.remote_view);
         mRemoteView.getSettings().setJavaScriptEnabled(true);
-        mPlugins = new PluginsManager(this);
+        mPlugins = new PluginsManager(this, mIp);
         mPlugins.gatherPlugins();
     }
 
