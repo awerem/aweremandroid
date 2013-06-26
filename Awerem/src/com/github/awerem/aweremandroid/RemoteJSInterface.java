@@ -42,17 +42,19 @@ public class RemoteJSInterface
     }
 
     @JavascriptInterface
-    public void sendXMLRPC(String method, Object... objects)
+    public Object sendXMLRPC(String method, Object... objects)
     {
         method = moduleName + "." + method;
+        Object ret = null;
         try
         {
-            this.proxy.callEx(method, objects);
+            ret = this.proxy.callEx(method, objects);
         }
         catch (XMLRPCException e)
         {
             e.printStackTrace();
         }
+        return ret;
     }
 
     @JavascriptInterface
