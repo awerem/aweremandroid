@@ -33,7 +33,7 @@ public class PluginsManager
         new getPluginsInfoAsyncTask(this).execute(url);
 
     }
-
+    
     public void onPluginInfoReceived()
     {
         boolean changeActive = false;

@@ -3,8 +3,6 @@ package com.github.awerem.aweremandroid;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.json.JSONObject;
-import org.json.JSONStringer;
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
 
@@ -18,21 +16,19 @@ public class RemoteJSInterface
     private PollManager pollmanager = null;
     private XMLRPCClient proxy = null;
 
-    public RemoteJSInterface(String moduleName, WebView view, PollManager pollmanager)
+    public RemoteJSInterface(String moduleName, String mIp, PollManager pollmanager)
     {
         this.moduleName = moduleName;
         this.pollmanager = pollmanager;
-        URL url_origin = null;
         URL url = null;
         try
         {
-            url_origin = new URL(view.getOriginalUrl());
-            url = new URL("http", url_origin.getHost(), url_origin.getPort(),
-                    "actions");
+            url = new URL("http", mIp, 34340,
+                    "action");
         }
         catch (MalformedURLException e)
         {
-            e.printStackTrace();
+            Log.w("RemoteJSInterface", "Malformed URL", e);
         }
         if (url != null)
         {
@@ -42,8 +38,9 @@ public class RemoteJSInterface
     }
 
     @JavascriptInterface
-    public Object sendXMLRPC(String method, Object... objects)
+    public Object sendAction(String method, Object... objects)
     {
+    	Log.i("JSInterface", "action sent");
         method = moduleName + "." + method;
         Object ret = null;
         try

@@ -27,162 +27,168 @@ import com.github.awerem.aweremandroid.plugins.onPluginsInfoLoadedListener;
 import com.github.awerem.aweremandroid.utils.Utils;
 
 public class RemoteActivity extends Activity implements
-        onPluginsInfoLoadedListener, ListView.OnItemClickListener
+		onPluginsInfoLoadedListener, ListView.OnItemClickListener
 {
-    private static final String DEBUG_TAG = "RemoteActivity";
-    private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
-    private WebView mRemoteView;
-    private PluginsManager mPlugins;
-    private ArrayList<Item> itemsList = null;
-    private String mIp = null;
+	private static final String DEBUG_TAG = "RemoteActivity";
+	private ListView mDrawerList;
+	private ActionBarDrawerToggle mDrawerToggle;
+	private DrawerLayout mDrawerLayout;
+	private WebView mRemoteView;
+	private PluginsManager mPlugins;
+	private ArrayList<Item> itemsList = null;
+	private String mIp = null;
+	private PollManager pollmanager;
 
-    @SuppressLint("SetJavaScriptEnabled")
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        Intent data = getIntent();
-        mIp = data.getStringExtra("ip");
-        setContentView(R.layout.activity_remote);
-        initDrawer();
-        PollManager pollmanager = new PollManager(this, "http://"+mIp+":34340/core?get=infos");
-        mRemoteView = (WebView) findViewById(R.id.remote_view);
-        mRemoteView.getSettings().setJavaScriptEnabled(true);
-        mPlugins = new PluginsManager(this, mIp);
-        mPlugins.gatherPlugins();
-    }
+	@SuppressLint("SetJavaScriptEnabled")
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		Intent data = getIntent();
+		mIp = data.getStringExtra("ip");
+		setContentView(R.layout.activity_remote);
+		initDrawer();
+		pollmanager = new PollManager(this, "http://" + mIp
+				+ ":34340/core?get=infos");
+		mRemoteView = (WebView) findViewById(R.id.remote_view);
+		mRemoteView.getSettings().setJavaScriptEnabled(true);
+		mPlugins = new PluginsManager(this, mIp);
+		mPlugins.gatherPlugins();
+	}
 
-    public void initDrawer()
-    {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.mainLayout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        // Set the list's click listener
-        // mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.drawable.ic_drawer, R.string.drawer_open,
-                R.string.drawer_close) {
+	public void initDrawer()
+	{
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.mainLayout);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+		// Set the list's click listener
+		// mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+				R.drawable.ic_drawer, R.string.drawer_open,
+				R.string.drawer_close) {
 
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view)
-            {
-                getActionBar().setTitle(mPlugins.getActivePluginTitle());
-                invalidateOptionsMenu(); // creates call to
-                                         // onPrepareOptionsMenu()
-            }
+			/** Called when a drawer has settled in a completely closed state. */
+			public void onDrawerClosed(View view)
+			{
+				getActionBar().setTitle(mPlugins.getActivePluginTitle());
+				invalidateOptionsMenu(); // creates call to
+											// onPrepareOptionsMenu()
+			}
 
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView)
-            {
-                getActionBar().setTitle("Awerem");
-                invalidateOptionsMenu(); // creates call to
-                                         // onPrepareOptionsMenu()
-            }
-        };
+			/** Called when a drawer has settled in a completely open state. */
+			public void onDrawerOpened(View drawerView)
+			{
+				getActionBar().setTitle("Awerem");
+				invalidateOptionsMenu(); // creates call to
+											// onPrepareOptionsMenu()
+			}
+		};
 
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+		// Set the drawer toggle as the DrawerListener
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
 
-        mDrawerList.setOnItemClickListener(this);
+		mDrawerList.setOnItemClickListener(this);
 
-    }
+	}
 
-    /* Called whenever we call invalidateOptionsMenu() */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu)
-    {
-        // If the nav drawer is open, hide action items related to the content
-        // view
-        // boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        return super.onPrepareOptionsMenu(menu);
-    }
+	/* Called whenever we call invalidateOptionsMenu() */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		// If the nav drawer is open, hide action items related to the content
+		// view
+		// boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+		return super.onPrepareOptionsMenu(menu);
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.remote, menu);
-        return true;
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		getMenuInflater().inflate(R.menu.remote, menu);
+		return true;
+	}
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState)
-    {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState)
+	{
+		super.onPostCreate(savedInstanceState);
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		mDrawerToggle.syncState();
+	}
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
+	@Override
+	public void onConfigurationChanged(Configuration newConfig)
+	{
+		super.onConfigurationChanged(newConfig);
+		mDrawerToggle.onConfigurationChanged(newConfig);
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-        if (mDrawerToggle.onOptionsItemSelected(item))
-        {
-            return true;
-        }
-        // Handle your other action bar items...
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		// Pass the event to ActionBarDrawerToggle, if it returns
+		// true, then it has handled the app icon touch event
+		if (mDrawerToggle.onOptionsItemSelected(item))
+		{
+			return true;
+		}
+		// Handle your other action bar items...
 
-        return super.onOptionsItemSelected(item);
-    }
+		return super.onOptionsItemSelected(item);
+	}
 
-    @Override
-    public void onPluginsInfoLoaded(boolean navDrawer, boolean remoteView)
-    {
-        if (navDrawer)
-            updateNavigationDrawer();
-        if(remoteView)
-            updateRemoteView();
-    }
+	@Override
+	public void onPluginsInfoLoaded(boolean navDrawer, boolean remoteView)
+	{
+		if (navDrawer)
+			updateNavigationDrawer();
+		if (remoteView)
+			updateRemoteView();
+	}
 
-    private void updateRemoteView()
-    {
-        mRemoteView.loadUrl("http://" + mIp + ":34340/ui/"
-                + mPlugins.getActivePluginName());
-    }
+	private void updateRemoteView()
+	{
+		mRemoteView.loadUrl("http://" + mIp + ":34340/ui/"
+				+ mPlugins.getActivePluginName());
+		mRemoteView.addJavascriptInterface(
+				new RemoteJSInterface(mPlugins.getActivePluginName(), mIp,
+						pollmanager), "awerem");
+	}
 
-    private void updateNavigationDrawer()
-    {
-        Log.i(DEBUG_TAG, "updateNavigationDrawer");
-        itemsList = Utils.createNavList(mPlugins.getPlugins(), this, mIp);
-        mDrawerList.setAdapter(new NavigationArrayAdapter(this, itemsList));
-    }
+	private void updateNavigationDrawer()
+	{
+		Log.i(DEBUG_TAG, "updateNavigationDrawer");
+		itemsList = Utils.createNavList(mPlugins.getPlugins(), this, mIp);
+		mDrawerList.setAdapter(new NavigationArrayAdapter(this, itemsList));
+	}
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,
-            long id)
-    {
-        if (itemsList.get(position).getViewType() == RowType.LIST_ITEM
-                .ordinal())
-        {
-            RemoteItem rem = (RemoteItem) itemsList.get(position);
-            mPlugins.setActive(rem.getPlugin().getName());
-            updateRemoteView();
-            mDrawerList.setItemChecked(position, true);
-            setTitle(mPlugins.getActivePluginTitle());
-            mDrawerLayout.closeDrawer(mDrawerList);
-        }
-    }
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id)
+	{
+		if (itemsList.get(position).getViewType() == RowType.LIST_ITEM
+				.ordinal())
+		{
+			RemoteItem rem = (RemoteItem) itemsList.get(position);
+			mPlugins.setActive(rem.getPlugin().getName());
+			updateRemoteView();
+			mDrawerList.setItemChecked(position, true);
+			setTitle(mPlugins.getActivePluginTitle());
+			mDrawerLayout.closeDrawer(mDrawerList);
+		}
+	}
 
-    public void triggerPluginGathering()
-    {
-        mPlugins.gatherPlugins();
-    }
+	public void triggerPluginGathering()
+	{
+		mPlugins.gatherPlugins();
+	}
 
-    public void onConnectionLost()
-    {
-        Toast.makeText(this, R.string.connection_lost, Toast.LENGTH_LONG).show();
-        startActivity(new Intent(this, PairingActivity.class));
-        finish();
-    }
+	public void onConnectionLost()
+	{
+		Toast.makeText(this, R.string.connection_lost, Toast.LENGTH_LONG)
+				.show();
+		startActivity(new Intent(this, PairingActivity.class));
+		finish();
+	}
 }
