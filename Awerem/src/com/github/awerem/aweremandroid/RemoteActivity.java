@@ -26,6 +26,7 @@ import com.github.awerem.aweremandroid.plugins.PluginsManager;
 import com.github.awerem.aweremandroid.plugins.onPluginsInfoLoadedListener;
 import com.github.awerem.aweremandroid.utils.Utils;
 import com.github.awerem.aweremandroid.web.RemoteJSInterface;
+import com.github.awerem.aweremandroid.web.RemoteWebChrome;
 
 public class RemoteActivity extends Activity implements
 		onPluginsInfoLoadedListener, ListView.OnItemClickListener
@@ -53,6 +54,7 @@ public class RemoteActivity extends Activity implements
 				+ ":34340/core?get=infos");
 		mRemoteView = (WebView) findViewById(R.id.remote_view);
 		mRemoteView.getSettings().setJavaScriptEnabled(true);
+		mRemoteView.setWebChromeClient(new RemoteWebChrome());
 		mPlugins = new PluginsManager(this, mIp);
 		mPlugins.gatherPlugins();
 	}

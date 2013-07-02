@@ -71,7 +71,7 @@ public class RemoteJSInterface
             this.tickName = name;
         }
         else
-            this.tickName = "Unamed";
+            this.tickName = "unnamed";
         this.tickStart = System.nanoTime();
     }
 
@@ -79,6 +79,6 @@ public class RemoteJSInterface
     public void tack()
     {
         Log.i("RemoteJSInterface", "elapsed time for " + this.tickName + ": "
-                + (System.nanoTime() - this.tickStart)/1000000);
+                + (System.nanoTime() - this.tickStart) / 1000000 + "ms");
     }
 }
