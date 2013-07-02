@@ -27,6 +27,7 @@ import com.github.awerem.aweremandroid.plugins.onPluginsInfoLoadedListener;
 import com.github.awerem.aweremandroid.utils.Utils;
 import com.github.awerem.aweremandroid.web.RemoteJSInterface;
 import com.github.awerem.aweremandroid.web.RemoteWebChrome;
+import com.github.awerem.aweremandroid.web.RemoteWebClient;
 
 public class RemoteActivity extends Activity implements
 		onPluginsInfoLoadedListener, ListView.OnItemClickListener
@@ -55,6 +56,7 @@ public class RemoteActivity extends Activity implements
 		mRemoteView = (WebView) findViewById(R.id.remote_view);
 		mRemoteView.getSettings().setJavaScriptEnabled(true);
 		mRemoteView.setWebChromeClient(new RemoteWebChrome());
+		mRemoteView.setWebViewClient(new RemoteWebClient(mIp));
 		mPlugins = new PluginsManager(this, mIp);
 		mPlugins.gatherPlugins();
 	}
@@ -63,8 +65,6 @@ public class RemoteActivity extends Activity implements
 	{
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.mainLayout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-		// Set the list's click listener
-		// mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
 				R.drawable.ic_drawer, R.string.drawer_open,
 				R.string.drawer_close) {
