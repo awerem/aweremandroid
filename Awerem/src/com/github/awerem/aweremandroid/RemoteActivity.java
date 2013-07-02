@@ -25,6 +25,7 @@ import com.github.awerem.aweremandroid.navigation.RemoteItem;
 import com.github.awerem.aweremandroid.plugins.PluginsManager;
 import com.github.awerem.aweremandroid.plugins.onPluginsInfoLoadedListener;
 import com.github.awerem.aweremandroid.utils.Utils;
+import com.github.awerem.aweremandroid.web.RemoteJSInterface;
 
 public class RemoteActivity extends Activity implements
 		onPluginsInfoLoadedListener, ListView.OnItemClickListener

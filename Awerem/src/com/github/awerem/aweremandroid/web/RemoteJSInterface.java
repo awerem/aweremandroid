@@ -1,10 +1,12 @@
-package com.github.awerem.aweremandroid;
+package com.github.awerem.aweremandroid.web;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
+
+import com.github.awerem.aweremandroid.PollManager;
 
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -61,6 +63,7 @@ public class RemoteJSInterface
         return pollmanager.getInfoAsJsonString(moduleName);
     }
 
+    @JavascriptInterface
     public void tick(String name)
     {
         if (name != null)
@@ -72,9 +75,10 @@ public class RemoteJSInterface
         this.tickStart = System.nanoTime();
     }
 
+    @JavascriptInterface
     public void tack()
     {
         Log.i("RemoteJSInterface", "elapsed time for " + this.tickName + ": "
-                + this.tickStart);
+                + (System.nanoTime() - this.tickStart)/1000000);
     }
 }
