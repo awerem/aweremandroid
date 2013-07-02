@@ -8,7 +8,6 @@ import org.xmlrpc.android.XMLRPCException;
 
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebView;
 
 public class RemoteJSInterface
 {
