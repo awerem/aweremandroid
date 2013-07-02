@@ -14,16 +14,18 @@ public class RemoteJSInterface
     private String moduleName = null;
     private PollManager pollmanager = null;
     private XMLRPCClient proxy = null;
+    private String tickName;
+    private long tickStart;
 
-    public RemoteJSInterface(String moduleName, String mIp, PollManager pollmanager)
+    public RemoteJSInterface(String moduleName, String mIp,
+            PollManager pollmanager)
     {
         this.moduleName = moduleName;
         this.pollmanager = pollmanager;
         URL url = null;
         try
         {
-            url = new URL("http", mIp, 34340,
-                    "action");
+            url = new URL("http", mIp, 34340, "action");
         }
         catch (MalformedURLException e)
         {
@@ -39,7 +41,7 @@ public class RemoteJSInterface
     @JavascriptInterface
     public Object sendAction(String method, Object... objects)
     {
-    	Log.i("JSInterface", "action sent");
+        Log.i("JSInterface", "action sent");
         method = moduleName + "." + method;
         Object ret = null;
         try
@@ -57,5 +59,22 @@ public class RemoteJSInterface
     public String getInfo()
     {
         return pollmanager.getInfoAsJsonString(moduleName);
+    }
+
+    public void tick(String name)
+    {
+        if (name != null)
+        {
+            this.tickName = name;
+        }
+        else
+            this.tickName = "Unamed";
+        this.tickStart = System.nanoTime();
+    }
+
+    public void tack()
+    {
+        Log.i("RemoteJSInterface", "elapsed time for " + this.tickName + ": "
+                + this.tickStart);
     }
 }
