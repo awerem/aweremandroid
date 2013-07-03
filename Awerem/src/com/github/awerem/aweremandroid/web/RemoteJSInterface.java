@@ -4,12 +4,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.xmlrpc.android.XMLRPCClient;
-import org.xmlrpc.android.XMLRPCException;
-
-import com.github.awerem.aweremandroid.PollManager;
 
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+
+import com.github.awerem.aweremandroid.PollManager;
 
 public class RemoteJSInterface
 {
@@ -41,19 +40,20 @@ public class RemoteJSInterface
     }
 
     @JavascriptInterface
-    public Object sendAction(String method, Object... objects)
+    public String sendAction(String method, String json)
     {
-        Log.i("JSInterface", "action sent");
+        Log.i("JSInterface", "action sent " + method + " with args: " + json);
         method = moduleName + "." + method;
-        Object ret = null;
+        String ret = null;
         try
         {
-            ret = this.proxy.callEx(method, objects);
+            ret = (String) this.proxy.call(method, json);
         }
-        catch (XMLRPCException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
+        Log.d("JSInterface", ret);
         return ret;
     }
 
