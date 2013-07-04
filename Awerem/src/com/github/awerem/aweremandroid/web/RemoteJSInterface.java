@@ -5,8 +5,11 @@ import java.net.URL;
 
 import org.xmlrpc.android.XMLRPCClient;
 
+import android.os.AsyncTask;
 import android.util.Log;
+import android.util.Pair;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
 
 import com.github.awerem.aweremandroid.PollManager;
 
@@ -17,12 +20,14 @@ public class RemoteJSInterface
     private XMLRPCClient proxy = null;
     private String tickName;
     private long tickStart;
+    private WebView webview;
 
     public RemoteJSInterface(String moduleName, String mIp,
-            PollManager pollmanager)
+            PollManager pollmanager, WebView webview)
     {
         this.moduleName = moduleName;
         this.pollmanager = pollmanager;
+        this.webview = webview;
         URL url = null;
         try
         {
@@ -55,6 +60,40 @@ public class RemoteJSInterface
         }
         Log.d("JSInterface", ret);
         return ret;
+    }
+
+    @JavascriptInterface
+    public void sendActionAsync(String method, String json, String callback)
+    {
+        new AsyncTask<String, Void, Pair<String, String>>() {
+
+            @Override
+            protected Pair<String, String> doInBackground(String... params)
+            {
+                Log.d("JSInterface", "\"" + params[0] + "\" " + "\""
+                        + params[1] + "\"");
+                String result = RemoteJSInterface.this.sendAction(params[0],
+                        params[1]);
+                return new Pair<String, String>(params[2], result);
+            }
+
+            @Override
+            protected void onPostExecute(Pair<String, String> result)
+            {
+                if(result.first != null && result.first != "")
+                {
+                    String injection = result.first + "('"
+                            + result.second.replace("'", "\\'") + "');";
+                    RemoteJSInterface.this.injectJS(injection);
+                }
+                super.onPostExecute(result);
+            }
+        }.execute(method, json, callback);
+    }
+
+    protected void injectJS(String injection)
+    {
+        webview.loadUrl("javascript:" + injection);
     }
 
     @JavascriptInterface
