@@ -37,7 +37,7 @@ public class PluginsManager
     public void onPluginInfoReceived()
     {
         boolean changeActive = false;
-        if (active == null)
+        if (active == null && plugins != null && plugins.size() > 0)
         {
             active = plugins.get(0);
             changeActive = true;
