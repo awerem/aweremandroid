@@ -58,7 +58,7 @@ public class RemoteJSInterface
         {
             e.printStackTrace();
         }
-        Log.d("JSInterface", ret);
+        Log.d("JSInterface", "");
         return ret;
     }
 
@@ -74,6 +74,10 @@ public class RemoteJSInterface
                         + params[1] + "\"");
                 String result = RemoteJSInterface.this.sendAction(params[0],
                         params[1]);
+                if (result == null)
+                {
+                	result = "";
+                }
                 return new Pair<String, String>(params[2], result);
             }
 
