@@ -156,7 +156,7 @@ public class RemoteActivity extends Activity implements
 				+ mPlugins.getActivePluginName());
 		mRemoteView.addJavascriptInterface(
 				new RemoteJSInterface(mPlugins.getActivePluginName(), mIp,
-						pollmanager, mRemoteView), "awerem");
+						pollmanager, mRemoteView), "_awerem");
 	}
 
 	private void updateNavigationDrawer()

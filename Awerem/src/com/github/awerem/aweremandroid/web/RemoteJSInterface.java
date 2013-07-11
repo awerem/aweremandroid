@@ -2,12 +2,13 @@ package com.github.awerem.aweremandroid.web;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.xmlrpc.android.XMLRPCClient;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.Pair;
+import android.util.SparseArray;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
@@ -21,6 +22,7 @@ public class RemoteJSInterface
     private String tickName;
     private long tickStart;
     private WebView webview;
+    private SparseArray<ArrayList<Object>> args;
 
     public RemoteJSInterface(String moduleName, String mIp,
             PollManager pollmanager, WebView webview)
@@ -28,6 +30,7 @@ public class RemoteJSInterface
         this.moduleName = moduleName;
         this.pollmanager = pollmanager;
         this.webview = webview;
+        this.args = new SparseArray<ArrayList<Object>>();
         URL url = null;
         try
         {
@@ -45,54 +48,59 @@ public class RemoteJSInterface
     }
 
     @JavascriptInterface
-    public String sendAction(String method, String json)
+    public Object sendAction(int id, String method)
     {
-        Log.i("JSInterface", "action sent " + method + " with args: " + json);
+  		Log.i("JSInterface", "action sent " + method + " with id: " + id);
         method = moduleName + "." + method;
-        String ret = null;
+        Object ret = null;
         try
         {
-            ret = (String) this.proxy.call(method, json);
+        	if(args.get(id) != null)
+        		ret = this.proxy.call(method, args.get(id).toArray());
+        	else
+        		ret = this.proxy.call(method);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-        Log.d("JSInterface", "");
+        finally
+        {
+        	args.delete(id);
+        }
         return ret;
     }
 
     @JavascriptInterface
-    public void sendActionAsync(String method, String json, String callback)
+    public void sendActionAsync(int id, String method)
     {
-        new AsyncTask<String, Void, Pair<String, String>>() {
+        new AsyncTask<Object, Void, String>() {
 
             @Override
-            protected Pair<String, String> doInBackground(String... params)
+            protected String doInBackground(Object... params)
             {
-                Log.d("JSInterface", "\"" + params[0] + "\" " + "\""
-                        + params[1] + "\"");
-                String result = RemoteJSInterface.this.sendAction(params[0],
-                        params[1]);
+            	int id = (Integer) params[0];
+            	String method = (String) params[1];
+                Log.d("JSInterface", "\"" + method + "\" " + "\""
+                        + id + "\"");
+                String result = String.valueOf(RemoteJSInterface.this.sendAction(id, method));
                 if (result == null)
                 {
                 	result = "";
                 }
-                return new Pair<String, String>(params[2], result);
+                return result;
             }
 
             @Override
-            protected void onPostExecute(Pair<String, String> result)
+            protected void onPostExecute(final String result)
             {
-                if(result.first != null && result.first != "")
+               if(result != null)
                 {
-                    String injection = result.first + "('"
-                            + result.second.replace("'", "\\'") + "');";
-                    RemoteJSInterface.this.injectJS(injection);
+                    RemoteJSInterface.this.injectJS(result);
                 }
                 super.onPostExecute(result);
             }
-        }.execute(method, json, callback);
+        }.execute(id, method);
     }
 
     protected void injectJS(String injection)
