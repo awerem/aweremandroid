@@ -56,7 +56,10 @@ public class RemoteJSInterface
         try
         {
         	if(args.get(id) != null)
-        		ret = this.proxy.call(method, args.get(id).toArray());
+        	{
+        		Object[] arguments = args.get(id).toArray();
+        		ret = this.proxy.callEx(method, arguments);
+        	}
         	else
         		ret = this.proxy.call(method);
         }
@@ -131,5 +134,41 @@ public class RemoteJSInterface
     {
         Log.i("RemoteJSInterface", "elapsed time for " + this.tickName + ": "
                 + (System.nanoTime() - this.tickStart) / 1000000 + "ms");
+    }
+    
+    @JavascriptInterface
+    public void addString(int id, String obj)
+    {
+    	Log.d("JSInterface", obj.toString());
+    	if(args.get(id) == null)
+    		args.append(id, new ArrayList<Object>());
+    	args.get(id).add(obj);
+    }
+    
+    @JavascriptInterface
+    public void addInt(int id, long obj)
+    {
+    	Log.d("JSInterface", String.valueOf(obj));
+    	if(args.get(id) == null)
+    		args.append(id, new ArrayList<Object>());
+    	args.get(id).add(obj);
+    }
+    
+    @JavascriptInterface
+    public void addBool(int id, boolean obj)
+    {
+    	Log.d("JSInterface", String.valueOf(obj));
+    	if(args.get(id) == null)
+    		args.append(id, new ArrayList<Object>());
+    	args.get(id).add(obj);
+    }
+    
+    @JavascriptInterface
+    public void addFloat(int id, double obj)
+    {
+    	Log.d("JSInterface", String.valueOf(obj));
+    	if(args.get(id) == null)
+    		args.append(id, new ArrayList<Object>());
+    	args.get(id).add(obj);
     }
 }
