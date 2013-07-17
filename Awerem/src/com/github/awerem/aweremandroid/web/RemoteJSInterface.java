@@ -1,5 +1,6 @@
 package com.github.awerem.aweremandroid.web;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -48,10 +49,12 @@ public class RemoteJSInterface
     }
 
     @JavascriptInterface
-    public Object sendAction(int id, String method)
+    public String sendAction(int id, String method)
     {
         Log.i("JSInterface", "action sent " + method + " with id: " + id);
         method = moduleName + "." + method;
+        JSReturner jsreturner = new JSReturner();
+        String str_ret = "";
         Object ret = null;
         try
         {
@@ -71,7 +74,20 @@ public class RemoteJSInterface
         {
             args.delete(id);
         }
-        return ret;
+        if (ret != null)
+        {
+            Log.i("JSInterface", "return value for id "+ id + ": " + ret.toString());
+        }
+        try
+        {
+            jsreturner.addObject(ret);
+            str_ret = jsreturner.toJson();
+            jsreturner.close();
+        }
+        catch (IOException e)
+        {
+        }
+        return str_ret;
     }
 
     @JavascriptInterface
