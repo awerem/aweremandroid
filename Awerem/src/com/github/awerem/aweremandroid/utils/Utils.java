@@ -25,7 +25,7 @@ public class Utils
         Collections.sort(plugins);
         for (PluginInfo plugin : plugins)
         {
-            if (!curCat.equals(plugin.getCategory()))
+            if (!curCat.equals(plugin.getCategory()) && plugin.getPriority() > 0)
             {
                 curCat = plugin.getCategory();
                 if (curCat.equals("contextual"))
@@ -35,7 +35,10 @@ public class Utils
                     list.add(new Header(ctx.getResources().getString(
                             R.string.utils)));
             }
-            list.add(new RemoteItem(plugin, ip));
+            if (plugin.getPriority() > 0)
+            {
+                list.add(new RemoteItem(plugin, ip));
+            }
         }
 
         return list;
