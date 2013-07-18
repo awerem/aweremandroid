@@ -1,6 +1,7 @@
 package com.github.awerem.aweremandroid.plugins;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.util.Log;
 
@@ -37,10 +38,14 @@ public class PluginsManager
     public void onPluginInfoReceived()
     {
         boolean changeActive = false;
-        if (active == null && plugins != null && plugins.size() > 0)
+        if (plugins != null)
         {
-            active = plugins.get(0);
-            changeActive = true;
+            Collections.sort(plugins);
+            if (active == null && plugins.size() > 0)
+            {
+                active = plugins.get(0);
+                changeActive = true;
+            }
         }
         if (callback != null)
         {
@@ -77,5 +82,4 @@ public class PluginsManager
             }
         }
     }
-
 }
