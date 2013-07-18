@@ -87,7 +87,7 @@ public class PluginInfo implements Comparable<PluginInfo>
     @Override
     public int compareTo(PluginInfo another)
     {
-        if (this.category == another.getCategory())
+        if (this.category.equals(another.getCategory()))
         {
             if (this.priority < another.getPriority())
                 return -1;
@@ -96,7 +96,7 @@ public class PluginInfo implements Comparable<PluginInfo>
             else
                 return 0;
         }
-        else if (this.category == "contextual")
+        else if (this.category.equals("contextual"))
         {
             return -1;
         }
