@@ -3,36 +3,34 @@ package com.github.awerem.aweremandroid.plugins;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import android.util.Log;
-
 public class PluginsManager
 {
     private String url = null;
     private ArrayList<PluginInfo> plugins = null;
     private onPluginsInfoLoadedListener callback = null;
     private PluginInfo active = null;
+    private String nextActiveName;
 
-    public PluginsManager(onPluginsInfoLoadedListener callback, String ip)
+    public PluginsManager(String ip)
     {
     	this.url = "http://" + ip + ":34340/core?get=plugin_list";
-        this.callback = callback;
     }
 
     public String getActivePluginName()
     {
         if (active != null)
         {
-            Log.d("PluginsManager", active.getName());
             return active.getName();
         }
         else
             return null;
     }
 
-    public void gatherPlugins()
+    public void gatherPlugins(onPluginsInfoLoadedListener callback, String activeName)
     {
         new getPluginsInfoAsyncTask(this).execute(url);
-
+        nextActiveName = activeName;
+        this.callback = callback;
     }
     
     public void onPluginInfoReceived()
@@ -43,7 +41,12 @@ public class PluginsManager
             Collections.sort(plugins);
             if (active == null && plugins.size() > 0)
             {
-                active = plugins.get(0);
+                if(nextActiveName != null)
+                    setActive(nextActiveName);
+                if(active == null)
+                {
+                    active = plugins.get(0);
+                }
                 changeActive = true;
             }
         }
