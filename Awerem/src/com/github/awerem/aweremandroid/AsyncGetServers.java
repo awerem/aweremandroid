@@ -8,11 +8,8 @@ import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -20,43 +17,43 @@ import android.util.Base64;
 import android.util.Log;
 
 class AsyncGetServers extends
-        AsyncTask<Void, InetAddress, ArrayList<InetAddress>>
+        AsyncTask<Void, InetAddress, Void>
 {
 
     private static final int AWEREM_PORT = 34340;
     private static final int TIMEOUT = 1000;
     private static final String DEBUG_TAG = "AsyncGetServers";
-    private WeakReference<Activity> ctx;
+    private WeakReference<PairingActivity> ctx;
 
-    public AsyncGetServers(Activity ctx)
+    public AsyncGetServers(PairingActivity ctx)
     {
-        this.ctx = new WeakReference<Activity>(ctx);
+        this.ctx = new WeakReference<PairingActivity>(ctx);
     }
 
     @Override
-    protected ArrayList<InetAddress> doInBackground(Void... params)
+    protected Void doInBackground(Void... params)
     {
-        return gatherIPs();
-
+        gatherIPs();
+        return null;
     }
-    
+
     @Override
     protected void onProgressUpdate(InetAddress... values)
     {
         super.onProgressUpdate(values);
+        if (ctx.get() != null)
+        {
+            for (InetAddress value : values)
+            {
+                ctx.get().addToComputersList(value);
+            }
+        }
     }
 
     @Override
-    protected void onPostExecute(ArrayList<InetAddress> result)
+    protected void onPostExecute(Void unused)
     {
-        if (ctx.get() != null && !result.isEmpty())
-        {
-            Intent openRemote = new Intent(ctx.get(), RemoteActivity.class);
-            openRemote.putExtra("ip", result.get(0).getHostAddress());
-            ctx.get().startActivity(openRemote);
-            ctx.get().finish();
-        }
-        super.onPostExecute(result);
+        super.onPostExecute(unused);
     }
 
     public InetAddress getBroadcastAddress() throws IOException
@@ -75,12 +72,11 @@ class AsyncGetServers extends
         return InetAddress.getByAddress(quads);
     }
 
-    public ArrayList<InetAddress> gatherIPs()
+    public void gatherIPs()
     {
         MulticastSocket socket = null;
         byte[] buf = new byte[128];
         DatagramPacket answer = new DatagramPacket(buf, buf.length);
-        ArrayList<InetAddress> addresses = new ArrayList<InetAddress>();
         try
         {
             socket = new MulticastSocket(AWEREM_PORT);
@@ -107,7 +103,6 @@ class AsyncGetServers extends
                     if (lines[1].startsWith("pong") && lines[2].equals(token))
                     {
                         publishProgress(answer.getAddress());
-                        addresses.add(answer.getAddress());
                     }
                 }
             }
@@ -121,7 +116,5 @@ class AsyncGetServers extends
         {
             e.printStackTrace();
         }
-        Log.v(DEBUG_TAG, addresses.toString());
-        return addresses;
     }
 }
