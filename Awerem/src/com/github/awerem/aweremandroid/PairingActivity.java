@@ -1,6 +1,5 @@
 package com.github.awerem.aweremandroid;
 
-import java.net.InetAddress;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,13 +13,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 public class PairingActivity extends Activity
 {
-
     private Timer discoveryTaskTimer;
-    private ArrayAdapter<String> computerAdapter = null;
+    private ArrayAdapter<ComputerData> computerAdapter = null;
     private ListView computerList;
     private ProgressBar spinner;
 
@@ -29,22 +26,25 @@ public class PairingActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pairing);
-        computerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1);
+        computerAdapter = new ArrayAdapter<ComputerData>(this,
+                android.R.layout.simple_list_item_activated_1);
         computerList = (ListView) findViewById(R.id.available_computers);
         computerList.setAdapter(computerAdapter);
-        computerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        computerList
+                .setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position,
-                    long id)
-            {
-                TextView text = (TextView) view;
-                Intent openRemote = new Intent(PairingActivity.this, RemoteActivity.class);
-                openRemote.putExtra("ip", text.getText());
-                startActivity(openRemote);
-                finish();
-            }
-        });
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView,
+                            View view, int position, long id)
+                    {
+                        ComputerData comp = (ComputerData) adapterView.getItemAtPosition(position);
+                        Intent openRemote = new Intent(PairingActivity.this,
+                                RemoteActivity.class);
+                        openRemote.putExtra("ip", comp.ip);
+                        startActivity(openRemote);
+                        finish();
+                    }
+                });
         spinner = (ProgressBar) findViewById(R.id.pairing_spinner);
     }
 
@@ -81,11 +81,17 @@ public class PairingActivity extends Activity
         return true;
     }
 
-    public void addToComputersList(InetAddress value)
+    public void addToComputersList(ComputerData value)
     {
-        if(computerAdapter.getPosition(value.getHostAddress()) == -1)
+        boolean add = true;
+        for(int i = 0; i < computerAdapter.getCount(); i++)
         {
-            computerAdapter.add(value.getHostAddress());
+            if(computerAdapter.getItem(i).equals(value))
+                add = false;
+        }
+        if (add)
+        {
+            computerAdapter.add(value);
         }
         if (!computerAdapter.isEmpty() && spinner.getVisibility() != View.GONE)
         {

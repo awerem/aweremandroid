@@ -16,8 +16,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
-class AsyncGetServers extends
-        AsyncTask<Void, InetAddress, Void>
+class AsyncGetServers extends AsyncTask<Void, ComputerData, Void>
 {
 
     private static final int AWEREM_PORT = 34340;
@@ -38,12 +37,12 @@ class AsyncGetServers extends
     }
 
     @Override
-    protected void onProgressUpdate(InetAddress... values)
+    protected void onProgressUpdate(ComputerData... values)
     {
         super.onProgressUpdate(values);
         if (ctx.get() != null)
         {
-            for (InetAddress value : values)
+            for (ComputerData value : values)
             {
                 ctx.get().addToComputersList(value);
             }
@@ -102,7 +101,10 @@ class AsyncGetServers extends
                     String[] lines = content.split("\\r?\\n");
                     if (lines[1].startsWith("pong") && lines[2].equals(token))
                     {
-                        publishProgress(answer.getAddress());
+                        ComputerData comp = new ComputerData(answer
+                                .getAddress().getHostAddress(), answer
+                                .getAddress().getHostAddress());
+                        publishProgress(comp);
                     }
                 }
             }
