@@ -22,11 +22,15 @@ class AsyncGetServers extends AsyncTask<Void, ComputerData, Void>
     private static final int AWEREM_PORT = 34340;
     private static final int TIMEOUT = 1000;
     private static final String DEBUG_TAG = "AsyncGetServers";
+    private static int discovery_iter = 0;
+    private int current_iter;
     private WeakReference<PairingActivity> ctx;
 
     public AsyncGetServers(PairingActivity ctx)
     {
         this.ctx = new WeakReference<PairingActivity>(ctx);
+        current_iter = discovery_iter;
+        discovery_iter++;
     }
 
     @Override
@@ -44,7 +48,7 @@ class AsyncGetServers extends AsyncTask<Void, ComputerData, Void>
         {
             for (ComputerData value : values)
             {
-                ctx.get().addToComputersList(value);
+                ctx.get().addToComputersList(value, current_iter);
             }
         }
     }
@@ -52,6 +56,8 @@ class AsyncGetServers extends AsyncTask<Void, ComputerData, Void>
     @Override
     protected void onPostExecute(Void unused)
     {
+        if(ctx.get() != null)
+            ctx.get().purgeComputersList(current_iter);
         super.onPostExecute(unused);
     }
 
@@ -99,11 +105,12 @@ class AsyncGetServers extends AsyncTask<Void, ComputerData, Void>
                     Log.d("SOCKET", new String(answer.getData(), "ascii"));
                     String content = new String(answer.getData(), "ascii");
                     String[] lines = content.split("\\r?\\n");
-                    if (lines[1].startsWith("pong") && lines[2].equals(token))
+                    if (lines[0].startsWith("awerem")
+                            && lines[1].startsWith("pong")
+                            && lines[2].equals(token))
                     {
-                        ComputerData comp = new ComputerData(answer
-                                .getAddress().getHostAddress(), answer
-                                .getAddress().getHostAddress());
+                        ComputerData comp = new ComputerData(lines[4], answer
+                                .getAddress().getHostAddress(), lines[3]);
                         publishProgress(comp);
                     }
                 }

@@ -1,5 +1,6 @@
 package com.github.awerem.aweremandroid;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -81,16 +82,21 @@ public class PairingActivity extends Activity
         return true;
     }
 
-    public void addToComputersList(ComputerData value)
+    public void addToComputersList(ComputerData value, int discovery_iter)
     {
         boolean add = true;
         for(int i = 0; i < computerAdapter.getCount(); i++)
         {
-            if(computerAdapter.getItem(i).equals(value))
+            ComputerData comp = computerAdapter.getItem(i);
+            if(comp.equals(value))
+            {
+                comp.seq = discovery_iter;
                 add = false;
+            }
         }
         if (add)
         {
+            value.seq = discovery_iter;
             computerAdapter.add(value);
         }
         if (!computerAdapter.isEmpty() && spinner.getVisibility() != View.GONE)
@@ -99,5 +105,23 @@ public class PairingActivity extends Activity
             computerList.setVisibility(View.VISIBLE);
         }
     }
-
+    
+    public void purgeComputersList(int discovery_iter)
+    {
+        ArrayList<ComputerData> to_removeList = new ArrayList<ComputerData>();
+        for(int i = 0; i < computerAdapter.getCount(); i++)
+        {
+            ComputerData comp = computerAdapter.getItem(i);
+            Log.d("DISCOVERY", String.valueOf(comp.seq) + " " + String.valueOf(discovery_iter));
+            if (comp.seq != discovery_iter)
+                to_removeList.add(comp);
+        }
+        for (ComputerData to_remove : to_removeList)
+            computerAdapter.remove(to_remove);
+        if(computerAdapter.isEmpty() && spinner.getVisibility() == View.GONE)
+        {
+            spinner.setVisibility(View.VISIBLE);
+            computerList.setVisibility(View.GONE);
+        }
+    }
 }

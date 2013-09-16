@@ -4,11 +4,14 @@ public class ComputerData
 {
     public String name = null;
     public String ip = null;
+    public String uuid;
+    public int seq = 0;
 
-    public ComputerData(String name, String ip)
+    public ComputerData(String name, String ip, String uuid)
     {
         this.name = name;
         this.ip = ip;
+        this.uuid = uuid;
     }
     
     @Override
