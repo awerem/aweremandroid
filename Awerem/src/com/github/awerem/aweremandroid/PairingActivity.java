@@ -112,7 +112,6 @@ public class PairingActivity extends Activity
         for(int i = 0; i < computerAdapter.getCount(); i++)
         {
             ComputerData comp = computerAdapter.getItem(i);
-            Log.d("DISCOVERY", String.valueOf(comp.seq) + " " + String.valueOf(discovery_iter));
             if (comp.seq != discovery_iter)
                 to_removeList.add(comp);
         }
