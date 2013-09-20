@@ -27,7 +27,8 @@ public class ComputerData
         if (this == o) return true;
         if(o instanceof ComputerData)
             other = (ComputerData) o;
-            if(other.ip.equals(this.ip) && other.name.equals(this.name))
+            if(other.ip.equals(this.ip) && other.name.equals(this.name)
+                    && other.uuid.equals(this.uuid))
                 return true;
         return false;
     }
