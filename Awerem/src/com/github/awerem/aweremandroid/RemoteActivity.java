@@ -146,7 +146,13 @@ public class RemoteActivity extends Activity implements
         {
             return true;
         }
-        // Handle your other action bar items...
+        else if(item.getItemId() == R.id.action_disconnect)
+        {
+            Intent intent = new Intent(this, PairingActivity.class);
+            intent.putExtra("autoconnect", false);
+            startActivity(intent);
+            finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }
