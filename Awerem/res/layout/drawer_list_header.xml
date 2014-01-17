@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/navheader"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_marginRight="56dp"
+    android:clickable="false"
+    android:focusableInTouchMode="false"
+    android:gravity="center_vertical"
+    android:padding="8dp"
+    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+    android:textColor="#222"
+    android:textStyle="bold" >
+
+</TextView>

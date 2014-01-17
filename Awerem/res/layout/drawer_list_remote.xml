@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_marginRight="56dp"
     android:gravity="center_vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:textAppearance="?android:attr/textAppearanceListItemSmall"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:background="?android:attr/activatedBackgroundIndicator"
-    android:textColor="#fff" >
-</TextView>
+    android:padding="8dp"
+    tools:ignore="UseCompoundDrawables" >
+
+    <ImageView
+        android:id="@+id/navremoteicon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:contentDescription="@null"
+        android:gravity="center_vertical"
+        android:src="@android:color/transparent" />
+
+    <TextView
+        android:id="@+id/navremote"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:paddingLeft="12dp"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:textColor="#000" >
+    </TextView>
+
+</LinearLayout>

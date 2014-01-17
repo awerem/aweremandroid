@@ -1,48 +1,73 @@
 package com.github.awerem.aweremandroid;
 
+import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
-public class RemoteActivity extends Activity implements onPluginsInfoLoadedListener
+import com.github.awerem.aweremandroid.navigation.Item;
+import com.github.awerem.aweremandroid.navigation.NavigationArrayAdapter;
+import com.github.awerem.aweremandroid.navigation.NavigationArrayAdapter.RowType;
+import com.github.awerem.aweremandroid.navigation.RemoteItem;
+import com.github.awerem.aweremandroid.plugins.PluginsManager;
+import com.github.awerem.aweremandroid.plugins.onPluginsInfoLoadedListener;
+import com.github.awerem.aweremandroid.utils.Utils;
+import com.github.awerem.aweremandroid.web.RemoteJSInterface;
+import com.github.awerem.aweremandroid.web.RemoteWebChrome;
+import com.github.awerem.aweremandroid.web.RemoteWebClient;
+
+public class RemoteActivity extends Activity implements
+        onPluginsInfoLoadedListener, ListView.OnItemClickListener
 {
-    private String[] mRemotes = { "Redbutton", "System" };
+    private static final String DEBUG_TAG = "RemoteActivity";
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private WebView mRemoteView;
     private PluginsManager mPlugins;
+    private ArrayList<Item> itemsList = null;
+    private String mIp = null;
+    private PollManager pollmanager;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Intent data = getIntent();
+        String nextActive = null;
+        mIp = data.getStringExtra("ip");
         setContentView(R.layout.activity_remote);
         initDrawer();
+        pollmanager = new PollManager(this, "http://" + mIp
+                + ":34340/core?get=infos");
         mRemoteView = (WebView) findViewById(R.id.remote_view);
-        mRemoteView.getSettings().setJavaScriptEnabled(true);  
-        mPlugins = new PluginsManager(this);
-        mPlugins.gatherPlugins();
+        mRemoteView.getSettings().setJavaScriptEnabled(true);
+        mRemoteView.setWebChromeClient(new RemoteWebChrome());
+        mRemoteView.setWebViewClient(new RemoteWebClient(mIp));
+        mPlugins = new PluginsManager(mIp);
+        if (savedInstanceState != null)
+            nextActive = savedInstanceState.getString("activePlugin", null);
+        mPlugins.gatherPlugins(this, nextActive);
     }
 
     public void initDrawer()
     {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.mainLayout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_remote, mRemotes));
-        // Set the list's click listener
-        // mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.drawable.ic_drawer, R.string.drawer_open,
                 R.string.drawer_close) {
@@ -50,7 +75,7 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view)
             {
-                getActionBar().setTitle("Lol");
+                getActionBar().setTitle(mPlugins.getActivePluginTitle());
                 invalidateOptionsMenu(); // creates call to
                                          // onPrepareOptionsMenu()
             }
@@ -69,6 +94,15 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
+        mDrawerList.setOnItemClickListener(this);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        outState.putString("activePlugin", mPlugins.getActivePluginName());
+        super.onSaveInstanceState(outState);
     }
 
     /* Called whenever we call invalidateOptionsMenu() */
@@ -77,7 +111,7 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
     {
         // If the nav drawer is open, hide action items related to the content
         // view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        // boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -112,16 +146,68 @@ public class RemoteActivity extends Activity implements onPluginsInfoLoadedListe
         {
             return true;
         }
-        // Handle your other action bar items...
+        else if(item.getItemId() == R.id.action_disconnect)
+        {
+            Intent intent = new Intent(this, PairingActivity.class);
+            intent.putExtra("autoconnect", false);
+            startActivity(intent);
+            finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onPluginsInfoLoaded()
+    public void onPluginsInfoLoaded(boolean navDrawer, boolean remoteView)
     {
-        mRemoteView.loadUrl("http://192.168.1.14:34340/ui/"
-                            +mPlugins.getActivePluginName());
+        if (navDrawer)
+            updateNavigationDrawer();
+        if (remoteView)
+            updateRemoteView();
     }
 
+    private void updateRemoteView()
+    {
+        mRemoteView.loadUrl("http://" + mIp + ":34340/ui/"
+                + mPlugins.getActivePluginName());
+        mRemoteView.addJavascriptInterface(
+                new RemoteJSInterface(mPlugins.getActivePluginName(), mIp,
+                        pollmanager, mRemoteView), "_awerem");
+    }
+
+    private void updateNavigationDrawer()
+    {
+        Log.i(DEBUG_TAG, "updateNavigationDrawer");
+        itemsList = Utils.createNavList(mPlugins.getPlugins(), this, mIp);
+        mDrawerList.setAdapter(new NavigationArrayAdapter(this, itemsList));
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position,
+            long id)
+    {
+        if (itemsList.get(position).getViewType() == RowType.LIST_ITEM
+                .ordinal())
+        {
+            RemoteItem rem = (RemoteItem) itemsList.get(position);
+            mPlugins.setActive(rem.getPlugin().getName());
+            updateRemoteView();
+            mDrawerList.setItemChecked(position, true);
+            setTitle(mPlugins.getActivePluginTitle());
+            mDrawerLayout.closeDrawer(mDrawerList);
+        }
+    }
+
+    public void triggerPluginGathering()
+    {
+        mPlugins.gatherPlugins(this, null);
+    }
+
+    public void onConnectionLost()
+    {
+        Toast.makeText(this, R.string.connection_lost, Toast.LENGTH_LONG)
+                .show();
+        startActivity(new Intent(this, PairingActivity.class));
+        finish();
+    }
 }
